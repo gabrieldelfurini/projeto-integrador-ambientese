@@ -104,7 +104,21 @@
 			<artifactId>flying-saucer-pdf-itext5</artifactId>
 			<version>9.1.22</version>
 		</dependency>
-
+		<dependency>
+			<groupId>io.opentelemetry</groupId>
+			<artifactId>opentelemetry-api</artifactId>
+			<version>1.37.0</version>
+		</dependency>
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-registry-prometheus</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.protobuf</groupId>
+			<artifactId>protobuf-java</artifactId>
+			<version>3.18.1</version>
+		</dependency>
 	</dependencies>
 
 	<build>
