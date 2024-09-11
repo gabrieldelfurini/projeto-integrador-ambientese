@@ -3,9 +3,10 @@ package com.ambientese.grupo5.Model;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
-@Table(name = "CheckList")
+@Table(name = "checklist")
 public class CheckListModel {
 
     @Id
@@ -16,10 +17,13 @@ public class CheckListModel {
     @NotBlank
     private String descricao;
 
-    // Relação Many-to-One com PerguntasModel
-    @ManyToOne
-    @JoinColumn(name = "pergunta_id") // Chave estrangeira
-    private PerguntasModel perguntas;
+    @ManyToMany
+    @JoinTable(
+            name = "checklist_perguntas",
+            joinColumns = @JoinColumn(name = "checklist_id"),
+            inverseJoinColumns = @JoinColumn(name = "pergunta_id")
+    )
+    private List<PerguntasModel> perguntas;
 
     // Getters e Setters
     public Long getId() {
@@ -38,11 +42,11 @@ public class CheckListModel {
         this.descricao = descricao;
     }
 
-    public PerguntasModel getPerguntas() {
+    public List<PerguntasModel> getPerguntas() {
         return perguntas;
     }
 
-    public void setPerguntas(PerguntasModel perguntas) {
+    public void setPerguntas(List<PerguntasModel> perguntas) {
         this.perguntas = perguntas;
     }
 }
