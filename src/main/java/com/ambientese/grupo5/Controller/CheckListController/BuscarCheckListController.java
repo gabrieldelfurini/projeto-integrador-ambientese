@@ -1,12 +1,12 @@
 package com.ambientese.grupo5.Controller.CheckListController;
 
 import com.ambientese.grupo5.Model.CheckListModel;
+import com.ambientese.grupo5.Model.Enums.EixoEnum;
 import com.ambientese.grupo5.Services.CheckListService.ListarCheckListService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/checklists")
@@ -20,14 +20,19 @@ public class BuscarCheckListController {
 
     @GetMapping("/{id}")
     public ResponseEntity<CheckListModel> getCheckListById(@PathVariable Long id) {
-        Optional<CheckListModel> checkList = listarCheckListService.findById(id);
-        return checkList.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        CheckListModel checkList = listarCheckListService.findById(id);
+        return ResponseEntity.ok(checkList);
     }
 
     @GetMapping
     public ResponseEntity<List<CheckListModel>> getAllCheckLists() {
         List<CheckListModel> checkLists = listarCheckListService.findAll();
+        return ResponseEntity.ok(checkLists);
+    }
+
+    @GetMapping("/by-eixo")
+    public ResponseEntity<List<CheckListModel>> getCheckListsByEixo(@RequestParam EixoEnum eixo) {
+        List<CheckListModel> checkLists = listarCheckListService.findByEixo(eixo);
         return ResponseEntity.ok(checkLists);
     }
 }

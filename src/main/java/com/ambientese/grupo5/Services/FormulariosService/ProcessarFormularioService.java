@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.ambientese.grupo5.Model.CheckListModel;
 import com.ambientese.grupo5.Model.EmpresaModel;
+import com.ambientese.grupo5.Repository.CheckListRepository;
 import com.ambientese.grupo5.Repository.EmpresaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,20 +26,51 @@ import jakarta.transaction.Transactional;
 @Service
 public class ProcessarFormularioService {
 
-    @Autowired
-    private FormularioRepository formularioRepository;
+    private final FormularioRepository formularioRepository;
 
-    @Autowired
-    private PerguntasRepository perguntasRepository;
+    private final PerguntasRepository perguntasRepository;
 
-    @Autowired
-    private RespostaRepository respostaRepository;
+    private final RespostaRepository respostaRepository;
 
-    @Autowired
-    private EmpresaRepository empresaRepository;
+    private final EmpresaRepository empresaRepository;
+
+    private final CheckListRepository checkListRepository;
+
+    public ProcessarFormularioService(FormularioRepository formularioRepository, PerguntasRepository perguntasRepository, RespostaRepository respostaRepository, EmpresaRepository empresaRepository, CheckListRepository checkListRepository) {
+        this.formularioRepository = formularioRepository;
+        this.perguntasRepository = perguntasRepository;
+        this.respostaRepository = respostaRepository;
+        this.empresaRepository = empresaRepository;
+        this.checkListRepository = checkListRepository;
+    }
 
     @Transactional
-    public FormularioModel criarFormulario(Long empresaId, List<FormularioRequest> formularioRequestList, Boolean isComplete) {
+    public FormularioModel criarFormulario(Long empresaId, List<FormularioRequest> formularioRequestList, Boolean isComplete, Long checklistId) {
+        if (checklistId != null) {
+            // Se checklistId não for nulo, usa o checklist para criar o formulário
+            Optional<CheckListModel> checklistOpt = checkListRepository.findById(checklistId);
+            if (!checklistOpt.isPresent()) {
+                throw new RuntimeException("Checklist não encontrado com ID: " + checklistId);
+            }
+
+            CheckListModel checklist = checklistOpt.get();
+            List<PerguntasModel> perguntasDoChecklist = checklist.getPerguntas();
+
+            // Prepara a lista de perguntas para o formulário
+            List<FormularioRequest> updatedFormularioRequestList = new ArrayList<>();
+            for (PerguntasModel pergunta : perguntasDoChecklist) {
+                updatedFormularioRequestList.add(new FormularioRequest(
+                        pergunta.getId(),
+                        pergunta.getDescricao(),
+                        null, // Resposta será null, pois estamos criando um novo formulário
+                        pergunta.getEixo(),
+                        null // ID do formulário será null para novo formulário
+                ));
+            }
+
+            formularioRequestList = updatedFormularioRequestList;
+        }
+
         Optional<FormularioModel> formularioIncompletoOpt = formularioRepository.findIncompleteByEmpresaId(empresaId);
 
         if (isComplete) {
@@ -88,7 +121,7 @@ public class ProcessarFormularioService {
         respostaRepository.saveAll(respostaModels);
         formularioModel.setRespostas(respostaModels);
 
-        return formularioRepository.save(formularioModel);
+        return formularioRepository.saveAndFlush(formularioModel);
     }
 
     private FormularioModel substituirFormularioIncompletoPorCompleto(FormularioModel formularioIncompleto, List<FormularioRequest> formularioRequestList) {
@@ -237,7 +270,7 @@ public class ProcessarFormularioService {
         if (ultimoFormulario != null) {
             return ultimoFormulario.getPontuacaoFinal() == null;
         }
-        
+
         return false;
     }
 }

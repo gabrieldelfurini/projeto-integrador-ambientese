@@ -2,6 +2,7 @@ package com.ambientese.grupo5.Services.CheckListService;
 
 import com.ambientese.grupo5.Model.CheckListModel;
 import com.ambientese.grupo5.Model.PerguntasModel;
+import com.ambientese.grupo5.Model.Enums.EixoEnum;
 import com.ambientese.grupo5.Repository.CheckListRepository;
 import com.ambientese.grupo5.Repository.PerguntasRepository;
 import org.springframework.stereotype.Service;
@@ -20,7 +21,7 @@ public class AtualizarCheckListService {
         this.perguntasRepository = perguntasRepository;
     }
 
-    public CheckListModel updateCheckList(Long id, String descricao, List<Long> selectedPerguntasIds) {
+    public CheckListModel updateCheckList(Long id, EixoEnum eixo, String descricao, List<Long> selectedPerguntasIds) {
         Optional<CheckListModel> existingCheckListOpt = checkListRepository.findById(id);
 
         if (existingCheckListOpt.isEmpty()) {
@@ -29,6 +30,7 @@ public class AtualizarCheckListService {
 
         CheckListModel existingCheckList = existingCheckListOpt.get();
         existingCheckList.setDescricao(descricao);
+        existingCheckList.setEixo(eixo);  // Atualiza o Eixo do checklist
 
         List<PerguntasModel> selectedPerguntas = perguntasRepository.findAllById(selectedPerguntasIds);
         existingCheckList.setPerguntas(selectedPerguntas);

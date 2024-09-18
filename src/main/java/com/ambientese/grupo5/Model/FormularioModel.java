@@ -131,4 +131,15 @@ public class FormularioModel {
     public void setDataRespostas(Date dataRespostas) {
         this.dataRespostas = dataRespostas;
     }
+
+    private Boolean isComplete;
+
+    // Getter e Setter para isComplete
+    public Boolean getComplete() {
+        return isComplete;
+    }
+
+    public void setComplete(Boolean isComplete) {
+        this.isComplete = isComplete;
+    }
 }

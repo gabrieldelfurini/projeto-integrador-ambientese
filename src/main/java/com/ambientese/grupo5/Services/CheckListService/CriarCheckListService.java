@@ -25,13 +25,15 @@ public class CriarCheckListService {
         // Busca as perguntas por Eixo
         List<PerguntasModel> perguntasByEixo = perguntasRepository.findByEixo(eixo);
 
+        // Filtra as perguntas selecionadas
         List<PerguntasModel> selectedPerguntas = perguntasByEixo.stream()
                 .filter(pergunta -> selectedPerguntasIds.contains(pergunta.getId()))
                 .collect(Collectors.toList());
 
+        // Cria o modelo do checklist
         CheckListModel checkList = new CheckListModel();
         checkList.setDescricao(descricao);
-
+        checkList.setEixo(eixo); // Adiciona o Eixo ao checklist
         checkList.setPerguntas(selectedPerguntas);
 
         return checkListRepository.save(checkList);
