@@ -2,6 +2,8 @@ package com.ambientese.grupo5.Model;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+
+import com.ambientese.grupo5.Model.Enums.EixoEnum;
 import jakarta.persistence.*;
 import java.util.List;
 
@@ -24,6 +26,19 @@ public class CheckListModel {
             inverseJoinColumns = @JoinColumn(name = "pergunta_id")
     )
     private List<PerguntasModel> perguntas;
+
+    @NotNull
+    @NotBlank
+    @Enumerated(EnumType.STRING)
+    private EixoEnum eixo;
+
+    public @NotNull @NotBlank EixoEnum getEixo() {
+        return eixo;
+    }
+
+    public void setEixo(@NotNull @NotBlank EixoEnum eixo) {
+        this.eixo = eixo;
+    }
 
     // Getters e Setters
     public Long getId() {
