@@ -40,7 +40,7 @@ function updateMenuButtons() {
         "Admin": [],
         "Gestor": [],
         "Consultor": ["funcionarios"],
-        "Guest": ["empresas", "funcionarios", "perguntas", "start-avaliacao"]
+        "Guest": ["empresas", "funcionarios", "perguntas", "formularios", "start-avaliacao"]
     };
     
     // Lista de todos os botões do menu
@@ -48,6 +48,7 @@ function updateMenuButtons() {
         "empresas": document.querySelector('.menu li[page="empresas"]'),
         "funcionarios": document.querySelector('.menu li[page="funcionarios"]'),
         "perguntas": document.querySelector('.menu li[page="perguntas"]'),
+        "formularios": document.querySelector('.menu li[page="formularios"]'),
         "start-avaliacao": document.querySelector('.menu li[page="start-avaliacao"]'),
     };
 
@@ -76,6 +77,7 @@ function updateMenuButtons() {
     }
 }
 
+let perguntasSelecionadas = [];
 function loadSelectedPageScript(page, props) {
     switch (page) {
         case "login":
@@ -103,7 +105,10 @@ function loadSelectedPageScript(page, props) {
             onOpenFuncionario();
             break;
         case "perguntas":
-            onOpenPerguntas();
+            onOpenPerguntas(false);
+            break;
+        case "formularios":
+            onOpenPerguntas(true);
             break;
         default:
             break;
@@ -133,8 +138,15 @@ function getMainFrameContent(page, props, addToHistory = true) {
         loginLogout.textContent = "Login";
     }
 
+    let pageUrl = null;
+    if(page === "formularios") {
+        pageUrl = "perguntas";
+    } else {
+        pageUrl = page;
+    }
+
     updateMenuButtons();
-    fetch(`${URL}/${page}`, options)
+    fetch(`${URL}/${pageUrl}`, options)
         .then(response => {
             if (!response.ok) {
                 if (response.status === 401) {
@@ -201,7 +213,7 @@ function menuButtonClicked(event) {
 
     mainContent.classList.add("hidden");
     loading.classList.remove("hidden");
-
+    
     getMainFrameContent(page, null, true);
 }
 

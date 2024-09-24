@@ -1,38 +1,47 @@
 let currentPagePerg = 0;
-function onOpenPerguntas() {
-    const priorBtn = document.getElementById('priorBtnPerg');
-    const nextBtn = document.getElementById('nextBtnPerg');
+function onOpenPerguntas(modo) {
     const search = document.getElementById('search');
     const searchBtn = document.querySelector('.imgSearch');
     const overlay = document.querySelector('.overlay');
     const divAdd = document.querySelector('.divAddPerg');
     const divEdit = document.querySelector('.divEditPerg');
     const divDelete = document.querySelector('.divDeletePerg');
+    const containerPerguntas = document.querySelector('.containerPerguntas');
+    const containerFormulario = document.querySelector('.divBtns');
     let currentid;
 
-    nextDataPagePerg();
+    if (modo) {
+        containerPerguntas.style.display = 'flex';
+        containerFormulario.remove();
+    } else {
+        containerPerguntas.remove();
+    }
+
+    const priorBtn = document.getElementById('priorBtnPerg');
+    const nextBtn = document.getElementById('nextBtnPerg');
+    nextDataPagePerg(modo);
 
     nextBtn.addEventListener('click', () => {
         currentPagePerg++;
-        nextDataPagePerg();
+        nextDataPagePerg(modo);
     });
 
     priorBtn.addEventListener('click', () => {
        if (currentPagePerg > 0) {
            currentPagePerg--;
-           nextDataPagePerg();
+           nextDataPagePerg(modo);
         }
     });
 
     searchBtn.addEventListener('click', () => {
         currentPagePerg = 0;
-        nextDataPagePerg();
+        nextDataPagePerg(modo);
     });
 
     search.addEventListener('keydown', (event) => {
         if (event.key === 'Enter') {
             currentPagePerg = 0;
-            nextDataPagePerg();
+            nextDataPagePerg(modo);
         }
     });
 
@@ -182,7 +191,7 @@ function onOpenPerguntas() {
     });
 }
 
-function addTableLinesPerguntas(data) {
+function addTableLinesPerguntas(data, modo) {
     const table = document.querySelector('.tablePerg>tbody');
     const prevBtn = document.getElementById('priorBtnPerg');
     const nextBtn = document.getElementById('nextBtnPerg');
@@ -212,32 +221,113 @@ function addTableLinesPerguntas(data) {
 
     data.forEach((pergunta, index) => {
         const newLine = document.createElement('tr');
-
         const classe = count % 2 === 0 ? 'azul' : '';
         count++;
 
-        newLine.innerHTML = `
-            <td class="thStyle thImg ${classe}">
-                <img src="/icons/Cadastro-Perguntas/Pergunta.png" alt="Pergunta" class="thImg">
-            </td>
-            <td class="thStyle ${classe}">${pergunta.id}</td>
-            <td class="thStyle ${classe}">${pergunta.descricao}</td>
-            <td class="thStyle ${classe}">${pergunta.eixo}</td>
-            <td class="thStyle ${classe}">
-                <img src="/icons//Cadastro-Empresa/edit.png" 
-                    data-id="${pergunta.id}"
-                    data-Pergunta="${pergunta.descricao}"
-                    data-Eixo="${pergunta.eixo}"
-                alt="Editar" class="imgEdit imgStyle">
-                <img src="/icons//Cadastro-Empresa/delete.png"
-                    data-id="${pergunta.id}"
-                    data-Pergunta="${pergunta.descricao}"
-                alt="Deletar" class="imgDelete imgStyle">                
-            </td>
-        `;
+        if(modo) {
+            newLine.innerHTML = `
+                <td class="thStyle thImg ${classe}">
+                    <label class="checkbox-custom">
+                        <input type="checkbox" class="form-check-input" id="check${pergunta.id}" name="selectedPerguntas" value="${pergunta.id}" hidden>
+                        <i class="far fa-square unchecked"></i>
+                        <i class="fas fa-check-square checked" style="display: none;"></i>
+                    </label>
+                </td>
+                <td class="thStyle ${classe}">${pergunta.id}</td>
+                <td class="thStyle ${classe}">${pergunta.descricao}</td>
+                <td class="thStyle ${classe}">${pergunta.eixo}</td>
+                <td class="thStyle ${classe}">
+                    <img src="/icons//Cadastro-Empresa/edit.png" 
+                        data-id="${pergunta.id}"
+                        data-Pergunta="${pergunta.descricao}"
+                        data-Eixo="${pergunta.eixo}"
+                    alt="Editar" class="imgEdit imgStyle">
+                    <img src="/icons//Cadastro-Empresa/delete.png"
+                        data-id="${pergunta.id}"
+                        data-Pergunta="${pergunta.descricao}"
+                    alt="Deletar" class="imgDelete imgStyle">                
+                </td>
+            `;
+        }else {
+            newLine.innerHTML = `
+                <td class="thStyle thImg ${classe}">
+                    <img src="/icons/Cadastro-Perguntas/Pergunta.png" alt="Pergunta" class="thImg">
+                </td>
+                <td class="thStyle ${classe}">${pergunta.id}</td>
+                <td class="thStyle ${classe}">${pergunta.descricao}</td>
+                <td class="thStyle ${classe}">${pergunta.eixo}</td>
+                <td class="thStyle ${classe}">
+                    <img src="/icons//Cadastro-Empresa/edit.png" 
+                        data-id="${pergunta.id}"
+                        data-Pergunta="${pergunta.descricao}"
+                        data-Eixo="${pergunta.eixo}"
+                    alt="Editar" class="imgEdit imgStyle">
+                    <img src="/icons//Cadastro-Empresa/delete.png"
+                        data-id="${pergunta.id}"
+                        data-Pergunta="${pergunta.descricao}"
+                    alt="Deletar" class="imgDelete imgStyle">                
+                </td>
+            `;
+        }
 
         table.appendChild(newLine);
     });
+
+    const todosCheckbox = document.querySelectorAll('.checkbox-custom input[type="checkbox"]');
+    modificarStatusCheckbox(todosCheckbox);
+    verificarValorCheckboxPrincipal(todosCheckbox);
+    
+    todosCheckbox.forEach(input => {
+        input.addEventListener('change', function() {
+            //Verifica se é o checkbox 'principal'
+            if(this.name === "checkboxTodasPerguntas") {
+                preencherComTodosInputs(todosCheckbox, this.checked);
+            } else {
+                if(perguntasSelecionadas.includes(input.value)) {
+                    perguntasSelecionadas = perguntasSelecionadas.filter(id => id !== this.value);
+                } else {
+                    perguntasSelecionadas.push(this.value);
+                }
+            }
+
+            modificarStatusCheckbox(todosCheckbox);
+
+            // Atualiza o texto com o número de perguntas selecionadas
+            document.querySelector('.qtdPerguntas').textContent = `${perguntasSelecionadas.length} perguntas selecionadas`;
+            verificarValorCheckboxPrincipal(todosCheckbox);
+        });
+    });
+}
+
+function verificarValorCheckboxPrincipal(todosCheckbox) {
+    todosCheckbox = [...todosCheckbox];
+    const checkboxSelecionados = todosCheckbox.filter(input => input.nextElementSibling.nextElementSibling.style.display === 'inline');
+    const todosCheckboxAtivados = checkboxSelecionados.length == todosCheckbox.length;
+    const inputPrincipal = document.querySelector('#checkboxTodasPerguntas');
+
+    inputPrincipal.nextElementSibling.style.display = todosCheckboxAtivados ? 'none' : 'inline';
+    inputPrincipal.nextElementSibling.nextElementSibling.style.display = todosCheckboxAtivados ? 'inline' : 'none';
+    inputPrincipal.checked = todosCheckboxAtivados ? true : false;
+}
+
+function preencherComTodosInputs(todosCheckbox, ativarTodos) {
+    todosCheckbox = [...todosCheckbox].map(input => input.value);
+    if (ativarTodos) {
+        perguntasSelecionadas.push(...todosCheckbox.filter(item => !perguntasSelecionadas.includes(item)));
+    } else {
+        perguntasSelecionadas = perguntasSelecionadas.filter(perguntaSelecionada => {
+            let teste = !todosCheckbox.includes(perguntaSelecionada);
+            console.log('aqui', teste)
+            return !todosCheckbox.includes(perguntaSelecionada);
+        })
+    }
+}
+
+function modificarStatusCheckbox(todosCheckbox) {
+    todosCheckbox.forEach(input => {
+        input.nextElementSibling.style.display = perguntasSelecionadas.includes(input.value) ? 'none' : 'inline';
+        input.nextElementSibling.nextElementSibling.style.display = perguntasSelecionadas.includes(input.value) ? ' inline' : 'none';
+    })
 }
 
 function processEventPerguntas(event) {
@@ -252,7 +342,7 @@ function processEventPerguntas(event) {
     };
 }
 
-function nextDataPagePerg () {
+function nextDataPagePerg (modo) {
     const search = document.getElementById('search').value;
     const queryParams = new URLSearchParams();
     if (search) queryParams.append('nome', search);
@@ -275,7 +365,7 @@ function nextDataPagePerg () {
                     tag.parentNode.removeChild(tag);
                 }
             );
-            addTableLinesPerguntas(data);
+            addTableLinesPerguntas(data, modo);
         })
         .catch(error => {
             const errorMessage = error.message ? error.message : 'Ocorreu um erro ao processar a solicitação';
