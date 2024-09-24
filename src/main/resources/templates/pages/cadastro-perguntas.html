@@ -18,7 +18,15 @@
                 <table class="tablePerg">
                     <thead>
                     <tr>
-                        <th class="thTable" id="thImg"></th>
+                        <!-- <th class="thTable" id="thImg"></th> -->
+                        <!-- <th class="thStyle ${classe} thTable"><input type="checkbox" class="selectPergunta" value="${pergunta.id}"></th> -->
+                        <th class="thStyle thTable ${classe}">
+                            <label class="checkbox-custom">
+                                <input type="checkbox" class="form-check-input" id="checkboxTodasPerguntas" name="checkboxTodasPerguntas" value="${pergunta.id}" hidden>
+                                <i class="far fa-square unchecked"></i>
+                                <i class="fas fa-check-square checked" style="display: none;"></i>
+                            </label>
+                        </th>
                         <th class="thTable" id="thId">Id</th>
                         <th class="thTable" id="thNome">Pergunta</th>
                         <th class="thTable" id="thRamo">Eixo</th>
@@ -35,6 +43,22 @@
                 <button id="nextBtnPerg" class="btn-next">
                     <img src="/icons/Buttons/arrow-right.svg" alt="Next" class="arrow-icon">
                 </button>
+            </div>
+
+            <div class="containerPerguntas" style="width: 90%;">
+                <div class="containerFinalizar">
+                    <div class="btnFinalizar">Criar Formulário</div>
+                    <span class="qtdPerguntas">0 perguntas selecionadas</span>
+                </div>
+
+                <div class="divBtnsFinalizar">
+                    <button id="priorBtnPerg" class="btn-prev disabled" disabled="true">
+                        <img src="/icons/Buttons/arrow-left.svg" alt="Previous" class="arrow-icon">
+                    </button>
+                    <button id="nextBtnPerg" class="btn-next">
+                        <img src="/icons/Buttons/arrow-right.svg" alt="Next" class="arrow-icon">
+                    </button>
+                </div>
             </div>
         </div>
         <div class="overlay"></div>
