@@ -11,13 +11,13 @@ import java.util.Optional;
 
 public interface FormularioRepository extends JpaRepository<FormularioModel, Long>, JpaSpecificationExecutor<FormularioModel> {
     
-    @Query("SELECT f FROM FormularioModel f WHERE f.id IN (SELECT MAX(f2.id) FROM FormularioModel f2 GROUP BY f2.empresa.id) ORDER BY f.pontuacaoFinal DESC")
+    @Query(value = "SELECT * FROM vw_formulario_ranking ORDER BY pontuacao_final DESC", nativeQuery = true)
     List<FormularioModel> findLatestByEmpresaOrderByPontuacaoFinalDesc();
 
-    @Query("SELECT f FROM FormularioModel f WHERE f.id IN (SELECT MAX(f2.id) FROM FormularioModel f2 WHERE f2.empresa.id = :empresaId GROUP BY f2.empresa.id)")
+    @Query(value = "SELECT * FROM vw_formulario_ranking WHERE empresa_id = :empresaId ORDER BY pontuacao_final DESC LIMIT 1", nativeQuery = true)
     FormularioModel findLatestFormByEmpresaId(@Param("empresaId") Long empresaId);
 
-    @Query("SELECT f FROM FormularioModel f WHERE f.empresa.id = :empresaId AND f.pontuacaoFinal IS NULL")
+    @Query(value = "SELECT * FROM vw_formulario_ranking WHERE empresa_id = :empresaId AND pontuacao_final IS NULL", nativeQuery = true)
     Optional<FormularioModel> findIncompleteByEmpresaId(@Param("empresaId") Long empresaId);
 
     List<FormularioModel> findAllByOrderByPontuacaoFinalAsc();
