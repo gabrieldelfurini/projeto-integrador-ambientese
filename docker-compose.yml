@@ -1,4 +1,3 @@
-version: '3.8'
 services:
   db:
     image: mysql:8.0
@@ -16,21 +15,20 @@ services:
       - "8080:8080"
     environment:
       SPRING_APPLICATION_NAME: grupo5
-      JWT_SECRET: GCJrc9*tnU(Y73E@SD&VIHqN  # Defina isso conforme necessário
+      JWT_SECRET: GCJrc9*tnU(Y73E@SD&VIHqN
       SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/ambientese?createDatabaseIfNotExist=true&serverTimezone=UTC
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
-      EMAIL: your_email@example.com  # Defina isso conforme necessário
-      EMAIL_HOST: smtp.example.com  # Defina isso conforme necessário
-      EMAIL_PORT: 587  # Defina isso conforme necessário
-      EMAIL_APP_PASSWORD: your_email_app_password  # Defina isso conforme necessário
+      EMAIL: your_email@example.com
+      EMAIL_HOST: smtp.example.com
+      EMAIL_PORT: 587
+      EMAIL_APP_PASSWORD: your_email_app_password
     depends_on:
       - db
 
   jaeger-api:
-    image: jaegertracing/all-in-one:latest
-    platform: linux/arm64
+    image: jaegertracing/opentelemetry-all-in-one
     container_name: jaeger-api
     ports:
       - 16686:16686
@@ -38,16 +36,16 @@ services:
       - collector-api
 
   collector-api:
-    image: otel/opentelemetry-collector-contrib:latest
+    image: otel/opentelemetry-collector-contrib:0.91.0
     container_name: collector-api
     volumes:
       - ./collector/otel-collector-config.yaml:/etc/otel-collector-config.yaml
-    command: ["--config=/etc/otel-collector-config.yaml"]
+    command: ['--config=/etc/otel-collector-config.yaml']
     ports:
       - 4317:4317
       - 4318:4318
       - 8889:8889
-  
+
   prometheus:
     container_name: prometheus
     image: prom/prometheus
@@ -70,27 +68,10 @@ services:
       - ./grafana/grafana-datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml
     restart: always
     ports:
-      - "3000:3000"
+      - '3000:3000'
     depends_on:
       - prometheus
 
-  # Sonar Scanner for code analysis
-  sonar-scanner:
-    image: sonarsource/sonar-scanner-cli:latest
-    environment:
-      SONAR_HOST_URL: http://sonarqube:9000
-      SONAR_LOGIN: sqa_a68c85923e7a13b25b13348d90d5ba19df741e11
-    volumes:
-      - "/c/Users/lgabr/OneDrive - Biopark Educação/Área de Trabalho/Ambientese/projeto-integrador-ambientese:/usr/src"  # Caminho corrigido para Windows
-
-    entrypoint:
-      - sonar-scanner
-      - -Dsonar.projectKey=projeto-integrador-ambientese
-      - -Dsonar.sources=/usr/src
-      - -Dsonar.host.url=http://sonarqube:9000
-      - -Dsonar.login=sqa_a68c85923e7a13b25b13348d90d5ba19df741e11
-
-  # PostgreSQL for SonarQube
   sonarqube-db:
     image: postgres:13-alpine
     container_name: sonarqube-db
@@ -101,7 +82,6 @@ services:
     volumes:
       - sonarqube-postgresql-data:/var/lib/postgresql/data
 
-  # SonarQube service
   sonarqube:
     image: sonarqube:latest
     container_name: sonarqube
@@ -112,12 +92,23 @@ services:
       SONAR_JDBC_USERNAME: sonarqube
       SONAR_JDBC_PASSWORD: sonarqube
     ports:
-      - "9000:9000"  # SonarQube UI is accessible on port 9000
+      - '9000:9000'
     volumes:
       - sonarqube-conf:/opt/sonarqube/conf
       - sonarqube-data:/opt/sonarqube/data
       - sonarqube-logs:/opt/sonarqube/logs
       - sonarqube-extensions:/opt/sonarqube/extensions
+
+  sonar-scanner:
+    image: sonarsource/sonar-scanner-cli:latest
+    depends_on:
+      - sonarqube
+    environment:
+      SONAR_HOST_URL: http://sonarqube:9000
+      SONAR_TOKEN: sqp_48e7b5eb46044540a5d7c466e403ee7e74010e4b
+    volumes:
+      - .:/usr/src
+      - ./sonar-project.properties:/opt/sonar-scanner/conf/sonar-scanner.properties
 
 volumes:
   mysql-data:
