@@ -28,5 +28,52 @@ services:
     depends_on:
       - db
 
+  jaeger-api:
+    image: jaegertracing/all-in-one:latest
+    platform: linux/arm64
+    container_name: jaeger-api
+    ports:
+      - 16686:16686
+    depends_on:
+      - collector-api
+
+  collector-api:
+    image: otel/opentelemetry-collector-contrib:latest
+    container_name: collector-api
+    volumes:
+      - ./collector/otel-collector-config.yaml:/etc/otel-collector-config.yaml
+    command: ["--config=/etc/otel-collector-config.yaml"]
+    ports:
+      - 4317:4317
+      - 4318:4318
+      - 8889:8889
+  
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --enable-feature=exemplar-storage
+      - --web.enable-remote-write-receiver
+    restart: always
+    ports:
+      - '9090:9090'
+    depends_on:
+      - collector-api
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana
+    volumes:
+      - ./grafana/grafana-datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml
+    restart: always
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+      
 volumes:
   mysql-data:
+  
