@@ -105,7 +105,7 @@ services:
       - sonarqube
     environment:
       SONAR_HOST_URL: http://sonarqube:9000
-      SONAR_TOKEN: sqp_de180a669756d5f6340485cfedb698fdd3c66ac4
+      SONAR_TOKEN: sqp_5129917639a62ad7723ac8313bf1b9c08d2afc24
     volumes:
       - .:/usr/src
       - ./sonar-project.properties:/opt/sonar-scanner/conf/sonar-scanner.properties

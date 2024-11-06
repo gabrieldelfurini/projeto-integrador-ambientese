@@ -1,4 +1,4 @@
-package com.ambientese.grupo5.EmpresaServiceTests;
+package com.ambientese.grupo5.Services.EmpresaService;
 
 import com.ambientese.grupo5.DTO.EmpresaRequest;
 import com.ambientese.grupo5.Exception.ValidacaoException;
@@ -6,11 +6,6 @@ import com.ambientese.grupo5.Model.EmpresaModel;
 import com.ambientese.grupo5.Model.EnderecoModel;
 import com.ambientese.grupo5.Repository.EmpresaRepository;
 import com.ambientese.grupo5.Repository.EnderecoRepository;
-import com.ambientese.grupo5.Services.EmpresaService.CriarEmpresaService;
-import com.ambientese.grupo5.Services.EmpresaService.ValidacaoCamposObrigatoriosService;
-import com.ambientese.grupo5.Services.EmpresaService.ValidacaoCNPJService;
-import com.ambientese.grupo5.Services.EmpresaService.MapearEmpresaService;
-import com.ambientese.grupo5.Services.EmpresaService.MapearEnderecoService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

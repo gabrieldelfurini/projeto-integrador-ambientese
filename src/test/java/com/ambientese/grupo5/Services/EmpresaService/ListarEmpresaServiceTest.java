@@ -1,9 +1,8 @@
-package com.ambientese.grupo5.EmpresaServiceTests;
+package com.ambientese.grupo5.Services.EmpresaService;
 
 import com.ambientese.grupo5.DTO.EmpresaCadastro;
 import com.ambientese.grupo5.Model.EmpresaModel;
 import com.ambientese.grupo5.Repository.EmpresaRepository;
-import com.ambientese.grupo5.Services.EmpresaService.ListarEmpresaService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

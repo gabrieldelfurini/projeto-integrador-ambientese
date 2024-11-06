@@ -13,9 +13,6 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>grupo5</name>
 	<description>Projeto Integrador 3° semestre - Ambiente-se - Grupo 5</description>
-	<properties>
-		<java.version>17</java.version>
-	</properties>
 
 	<dependencies>
 		<dependency>
@@ -108,36 +105,50 @@
 	</dependencies>
 
 <build>
-    <plugins>
-        <plugin>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-maven-plugin</artifactId>
-        </plugin>
-        <plugin>
-            <groupId>org.jacoco</groupId>
-            <artifactId>jacoco-maven-plugin</artifactId>
-            <version>0.8.7</version>
-            <executions>
-                <execution>
-                    <goals>
-                        <goal>prepare-agent</goal>
-                    </goals>
-                </execution>
-                <execution>
-                    <id>report</id>
-                    <phase>test</phase>
-                    <goals>
-                        <goal>report</goal>
-                    </goals>
-                </execution>
-            </executions>
-        </plugin>
-        <plugin>
-            <groupId>org.sonarsource.scanner.maven</groupId>
-            <artifactId>sonar-maven-plugin</artifactId>
-            <version>3.9.1.2184</version>
-        </plugin>
-    </plugins>
-</build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.11</version>
+				<configuration>
+					<excludes>
+						<exclude>*/InitialDataLoader.</exclude>
+						<exclude>*/View//</exclude>
+					</excludes>
+				</configuration>
+				<executions>
+					<execution>
+						<id>prepare-agent</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 
+	<properties>
+		<java.version>17</java.version>
+		<sonar.host.url>http://localhost:9000</sonar.host.url>
+		<sonar.login>sqp_5129917639a62ad7723ac8313bf1b9c08d2afc24</sonar.login>
+		<sonar.exclusions>*/InitialDataLoader.java,/View//</sonar.exclusions>
+		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+		<sonar.coverage.jacoco.xmlReportPaths>${project.build.directory}/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+		<sonar.java.binaries>${project.build.directory}/classes</sonar.java.binaries>
+		<sonar.java.test.binaries>${project.build.directory}/test-classes</sonar.java.test.binaries>
+		<sonar.tests>${project.basedir}/src/test/java</sonar.tests>
+		<sonar.sources>${project.basedir}/src/main/java</sonar.sources>
+	</properties>
 </project>
