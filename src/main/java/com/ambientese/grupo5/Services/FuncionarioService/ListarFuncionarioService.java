@@ -1,6 +1,7 @@
 package com.ambientese.grupo5.Services.FuncionarioService;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +57,28 @@ public class ListarFuncionarioService {
                         end == total
                 ))
                 .collect(Collectors.toList());
+    }
+
+    
+    @Transactional
+    public FuncionarioCadastro getFuncionarioById(Long id) {
+        Optional<FuncionarioModel> funcionarioOptional = funcionarioRepository.findById(id);
+        
+        if (!funcionarioOptional.isPresent()) {
+            throw new RuntimeException("Funcionário não encontrado"); // or a custom exception
+        }
+        
+        FuncionarioModel funcionario = funcionarioOptional.get();
+        return new FuncionarioCadastro(
+                funcionario.getId(),
+                funcionario.getNome(),
+                funcionario.getCpf(),
+                funcionario.getEmail(),
+                funcionario.getDataNascimento(),
+                funcionario.getCargo(),
+                funcionario.getUsuario(),
+                false // Assuming 'isLastPage' is false for a single item
+        );
     }
     
 }

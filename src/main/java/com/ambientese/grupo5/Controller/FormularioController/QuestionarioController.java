@@ -10,6 +10,7 @@ import com.ambientese.grupo5.Services.FormulariosService.PerguntasCheckListServi
 import com.ambientese.grupo5.Services.FormulariosService.ProcessarFormularioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import java.util.Optional;
 
 import java.util.List;
 
@@ -40,8 +41,12 @@ public class QuestionarioController {
         if (empresaId == null) {
             throw new RuntimeException("ID da empresa não pode ser nulo");
         }
+        
+        Long ultimoChecklist = checkListService.buscarUltimoChecklist();
+        System.out.println("checklistId " + ultimoChecklist);
+
         // Usar o método correto para buscar perguntas do checklist
-        return perguntasCheckListService.buscarPerguntasDoChecklist(checklistId, empresaId);
+        return perguntasCheckListService.buscarPerguntasDoChecklist(ultimoChecklist, empresaId);
     }
 
     @PostMapping("/auth/processarRespostas")

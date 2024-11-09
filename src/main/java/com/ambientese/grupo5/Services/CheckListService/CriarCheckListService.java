@@ -23,7 +23,7 @@ public class CriarCheckListService {
 
     public CheckListModel createCheckList(EixoEnum eixo, String descricao, List<Long> selectedPerguntasIds) {
         // Busca as perguntas por Eixo
-        List<PerguntasModel> perguntasByEixo = perguntasRepository.findByEixo(eixo);
+        List<PerguntasModel> perguntasByEixo = perguntasRepository.findAllById(selectedPerguntasIds);
 
         // Filtra as perguntas selecionadas
         List<PerguntasModel> selectedPerguntas = perguntasByEixo.stream()

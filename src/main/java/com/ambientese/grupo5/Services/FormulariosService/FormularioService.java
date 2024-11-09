@@ -56,6 +56,8 @@ public class FormularioService {
                 ))
                 .collect(Collectors.toList());
 
+        ProcessarFormularioService processarFormularioService = new ProcessarFormularioService(formularioRepository, perguntasRepository, null, empresaRepository, null);
+        processarFormularioService.atualizarPontuacoes(formulario, perguntasSelecionadas);
         // Define as respostas no formulário e salva
         formulario.setRespostas(respostas);
         formularioRepository.save(formulario);

@@ -1,6 +1,7 @@
 package com.ambientese.grupo5.Controller.PerguntasController;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,13 +12,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ambientese.grupo5.DTO.PerguntaCadastro;
+import com.ambientese.grupo5.Model.EmpresaModel;
 import com.ambientese.grupo5.Model.PerguntasModel;
 import com.ambientese.grupo5.Model.Enums.EixoEnum;
 import com.ambientese.grupo5.Services.PerguntasService.ListarPerguntasService;
+import com.ambientese.grupo5.Repository.PerguntasRepository;
 
 @RestController
 @RequestMapping("/auth/Perguntas")
 public class BuscarPerguntaController {
+
+    @Autowired
+    private PerguntasRepository perguntasRepository;
 
     @Autowired
     private ListarPerguntasService listarPerguntasService;
@@ -37,6 +43,13 @@ public class BuscarPerguntaController {
         List<PerguntaCadastro> resultado = listarPerguntasService.allPagedPerguntasWithFilter(nome, page, size);
 
         return ResponseEntity.ok(resultado);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> buscarEmpresaPorId(@PathVariable Long id) {
+        Optional<PerguntasModel> pergunta = perguntasRepository.findById(id);
+        return pergunta.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
     
 }

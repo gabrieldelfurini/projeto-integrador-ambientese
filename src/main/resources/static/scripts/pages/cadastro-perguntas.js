@@ -189,6 +189,58 @@ function onOpenPerguntas(modo) {
         divEdit.style.display = 'none';
         divDelete.style.display = 'none';
     });
+
+    const botaoFinalizar = document.querySelector('.btnFinalizar');
+    if(botaoFinalizar) {
+        botaoFinalizar.addEventListener('click', function() {
+        
+            // Pega a descrição do formulário e o eixo (isso depende da sua interface, por exemplo)
+            const descricao = prompt("Insira a descrição do formulário:");
+            const eixo = prompt("Insira o eixo (Governamental, Ambiental, Social):");
+
+            // Valida se há perguntas selecionadas e se os valores de descrição e eixo foram preenchidos
+            if (perguntasSelecionadas.length === 0) {
+                alert('Por favor, selecione pelo menos uma pergunta para criar o formulário.');
+                return;
+            }
+            if (!descricao || !eixo) {
+                alert('Por favor, insira uma descrição e um eixo.');
+                return;
+            }
+    
+            // Monta o objeto de requisição para enviar ao backend
+            const requestData = {
+                descricao: descricao,
+                selectedPerguntasIds: perguntasSelecionadas,
+            };
+    
+            // Envia a requisição ao backend
+            fetch('/checklist/Add?eixo=' + eixo, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestData),
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erro ao criar o formulário.');
+                }
+                // console.log('response', response);
+
+                return response.json();
+            })
+            .then(data => {
+                alert('Formulário criado com sucesso!');
+                getMainFrameContent('start-avaliacao');
+                perguntasSelecionadas = [];
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                alert('Ocorreu um erro ao criar o formulário.');
+            });
+        });
+    }
 }
 
 function addTableLinesPerguntas(data, modo) {

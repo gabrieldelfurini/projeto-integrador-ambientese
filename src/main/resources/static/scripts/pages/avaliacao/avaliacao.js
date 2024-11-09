@@ -7,13 +7,14 @@ const addFile = () => {
 }
 
 const renderQuestions = (questions, isLast) => {
+    if (questions.length === 0) return;
     const otherCategory = document.querySelectorAll('.questions-category');
     const questionsCategory = document.createElement('div');
     if (otherCategory.length > 0) {
         questionsCategory.style.display = 'none';
     }
     questionsCategory.classList.add('questions-category');
-    questionsCategory.innerHTML = `<h2>${formProps.isNew ? questions[0].eixo : questions[0].perguntaEixo}</h2>`;
+    questionsCategory.innerHTML = `<h2>${!formProps.isNew ? questions[0].eixo : questions[0].perguntaEixo}</h2>`;
     questions.forEach(question => {
         if (!formProps.isNew) {
             question = {
@@ -38,20 +39,20 @@ const renderQuestions = (questions, isLast) => {
         const whatsChecked = FwhatsChecked();
         div.classList.add('form-question');
         div.innerHTML = `
-            <h2>${question.descricao}</h2>
+            <h2>${question.perguntaDescricao}</h2>
             <div class="form-answer">
                 <label>
-                    <input type="radio" name="answer-${question.id}" value="Conforme" ${question.resposta ? question.resposta === "Conforme" ? 'checked' : null : (enviornment === 'dev' && whatsChecked === 1 ? 'checked' : null)}>
+                    <input type="radio" name="answer-${question.perguntaId}" value="Conforme" ${question.resposta ? question.resposta === "Conforme" ? 'checked' : null : (enviornment === 'dev' && whatsChecked === 1 ? 'checked' : null)}>
                     <p>Conforme</p>
                 </label>
                 <br>
                 <label>
-                    <input type="radio" name="answer-${question.id}" value="NaoConforme" ${question.resposta ? question.resposta === "NaoConforme" ? 'checked' : null : (enviornment === 'dev' && whatsChecked === -1 ? 'checked' : null)}>
+                    <input type="radio" name="answer-${question.perguntaId}" value="NaoConforme" ${question.resposta ? question.resposta === "NaoConforme" ? 'checked' : null : (enviornment === 'dev' && whatsChecked === -1 ? 'checked' : null)}>
                     <p>Não conforme</p>
                 </label>
                 <br>
                 <label>
-                    <input type="radio" name="answer-${question.id}" value="NaoSeAdequa" ${question.resposta ? question.resposta === "NaoSeAdequa" ? 'checked' : null : (enviornment === 'dev' && whatsChecked === 0 ? 'checked' : null)}>
+                    <input type="radio" name="answer-${question.perguntaId}" value="NaoSeAdequa" ${question.resposta ? question.resposta === "NaoSeAdequa" ? 'checked' : null : (enviornment === 'dev' && whatsChecked === 0 ? 'checked' : null)}>
                     <p>Não aplicavel</p>
                 </label>
                 <!-- <div class="add-file">
@@ -119,7 +120,7 @@ const renderQuestions = (questions, isLast) => {
 
 const isAllQuestionsAnswered = (allQuestions) => {
     for (let i = 0; i < allQuestions.length; i++) {
-        const answer = document.querySelector(`input[name="answer-${formProps.isNew ? allQuestions[i].id : allQuestions[i].perguntaId}"]:checked`);
+        const answer = document.querySelector(`input[name="answer-${!formProps.isNew ? allQuestions[i].id : allQuestions[i].perguntaId}"]:checked`);
         if (!answer) {
             return false;
         }
@@ -131,12 +132,12 @@ const isAllQuestionsAnswered = (allQuestions) => {
 const sendQuestions = (isComplete, hasFinished) => {
     const questions = [];
     allQuestions.forEach(question => {
-        const answer = document.querySelector(`input[name="answer-${formProps.isNew ? question.id : question.perguntaId}"]:checked`);
+        const answer = document.querySelector(`input[name="answer-${!formProps.isNew ? question.id : question.perguntaId}"]:checked`);
         questions.push(
             {
-                perguntaId: formProps.isNew ? question.id : question.perguntaId,
+                perguntaId: !formProps.isNew ? question.id : question.perguntaId,
                 respostaUsuario: answer?.value ? answer.value : null,
-                perguntaEixo: formProps.isNew ? question.eixo : question.perguntaEixo,
+                perguntaEixo: !formProps.isNew ? question.eixo : question.perguntaEixo,
             }
         );
     });
@@ -175,8 +176,9 @@ const onOpenAvaliacao = (props) => {
     const governamental = [];
     const ambiental = [];
     const social = [];
+    const checkListId = 2;
 
-    fetch(`${URL}/auth/questionario/${props.isNew}?empresaId=${props.company.id}`, options)
+    fetch(`${URL}/auth/questionario/${checkListId}?empresaId=${props.company.id}`, options)
         .then(response => {
             if (!response.ok) {
                 throw new Error('Erro ao recuperar dados');
@@ -184,8 +186,8 @@ const onOpenAvaliacao = (props) => {
             return response.json();
         })
         .then(data => {
-            if (props.isNew) {
-                data.perguntas.forEach(item => {
+            if (!props.isNew) {
+                data.formularioRequests.forEach(item => {
                     if (item.eixo === 'Governamental') {
                         if (governamental.length < questionNumbers) {
                             governamental.push(item);
@@ -212,11 +214,11 @@ const onOpenAvaliacao = (props) => {
                     }
                 });
             }
-            
+
             allQuestions = [...governamental, ...ambiental, ...social];
 
-            renderQuestions(governamental)
-            renderQuestions(ambiental)
+            renderQuestions(governamental, ambiental.length === 0 && social.length === 0 ? true : false)
+            renderQuestions(ambiental, social.length === 0 ? true : false)
             renderQuestions(social, true)
         })
         .catch(err => {

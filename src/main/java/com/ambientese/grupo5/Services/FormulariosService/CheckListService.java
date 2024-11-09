@@ -16,4 +16,11 @@ public class CheckListService {
     public List<CheckListModel> buscarChecklists() {
         return checkListRepository.findAll();
     }
+
+    public long buscarUltimoChecklist() {
+        // Busca o último checklist ordenando pelo ID em ordem decrescente
+        return checkListRepository.findTopByOrderByIdDesc()
+                                  .map(CheckListModel::getId)
+                                  .orElseThrow(() -> new RuntimeException("Nenhum checklist encontrado"));
+    }
 }

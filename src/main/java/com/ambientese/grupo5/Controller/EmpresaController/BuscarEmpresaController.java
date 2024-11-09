@@ -43,6 +43,7 @@ public class BuscarEmpresaController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
         
+        System.out.println("Searching for companies with name: ");
         List<EmpresaCadastro> resultado = listarEmpresaService.allPagedEmpresasWithFilter(nome, page, size);
         return ResponseEntity.ok(resultado);
     }

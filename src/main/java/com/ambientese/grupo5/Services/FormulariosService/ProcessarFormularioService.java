@@ -166,7 +166,7 @@ public class ProcessarFormularioService {
         return formularioRepository.saveAndFlush(formularioIncompleto);
     }
 
-    private FormularioModel atualizarPontuacoes(FormularioModel formularioModel, List<FormularioRequest> formularioRequestList) {
+    public FormularioModel atualizarPontuacoes(FormularioModel formularioModel, List<FormularioRequest> formularioRequestList) {
         int totalPerguntas = formularioRequestList.size();
         int perguntasConforme = 0;
         int conformeSocial = 0;

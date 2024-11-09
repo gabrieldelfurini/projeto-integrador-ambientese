@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,5 +32,11 @@ public class BuscarFuncionarioController {
         List<FuncionarioCadastro> resultado = listarFuncionarioService.allPagedFuncionariosWithFilter(nome, page, size);
 
         return ResponseEntity.ok(resultado);
+    }
+
+    @GetMapping("/Get/{id}")
+    public ResponseEntity<FuncionarioCadastro> buscarFuncionarioPorId(@PathVariable Long id) {
+        FuncionarioCadastro funcionario = listarFuncionarioService.getFuncionarioById(id);
+        return ResponseEntity.ok(funcionario);
     }
 }

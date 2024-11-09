@@ -27,6 +27,8 @@ public class CriarCheckListController {
         String descricao = checkListRequest.getDescricao();
         List<Long> selectedPerguntasIds = checkListRequest.getSelectedPerguntasIds();
 
+        System.out.println(" Descricao: " + descricao + " Selected Perguntas: " + selectedPerguntasIds);
+
         CheckListModel createdCheckList = criarCheckListService.createCheckList(eixo, descricao, selectedPerguntasIds);
         return ResponseEntity.ok(createdCheckList);
     }
