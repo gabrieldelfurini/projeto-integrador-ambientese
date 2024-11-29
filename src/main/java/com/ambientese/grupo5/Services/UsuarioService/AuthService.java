@@ -39,10 +39,7 @@ public class AuthService {
                 user = funcionarioModel.getUsuario();
             }
         }
-        if (user != null && BCrypt.checkpw(password, user.getPassword())) {
-            return true;
-        }
-        return false;
+        return user != null && BCrypt.checkpw(password, user.getPassword());
     }
 
     public String login(String login, String plainTextPassword) {

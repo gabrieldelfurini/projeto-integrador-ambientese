@@ -17,7 +17,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public class AuthFilter extends OncePerRequestFilter {
 
-    private JWTUtil jwtUtil;
+    private final JWTUtil jwtUtil;
 
     public AuthFilter(JWTUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
@@ -27,16 +27,12 @@ public class AuthFilter extends OncePerRequestFilter {
         List<String> gestorBlockedRoutes = Arrays.asList();
         List<String> consultorBlockedRoutes = Arrays.asList("/auth/Funcionario/*", "/auth/Usuarios/*", "/funcionarios");
 
-        switch (cargo) {
-            case "Admin":
-                return true;
-            case "Gestor":
-                return !matchesAny(gestorBlockedRoutes, requestURI);
-            case "Consultor":
-                return !matchesAny(consultorBlockedRoutes, requestURI);
-            default:
-                return false;
-        }
+        return switch (cargo) {
+            case "Admin" -> true;
+            case "Gestor" -> !matchesAny(gestorBlockedRoutes, requestURI);
+            case "Consultor" -> !matchesAny(consultorBlockedRoutes, requestURI);
+            default -> false;
+        };
     }
 
     private boolean matchesAny(List<String> routes, String requestURI) {

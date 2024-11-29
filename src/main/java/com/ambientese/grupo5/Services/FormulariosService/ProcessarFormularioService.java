@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ambientese.grupo5.DTO.FormularioRequest;
 import com.ambientese.grupo5.Model.Enums.NivelCertificadoEnum;
-import com.ambientese.grupo5.Model.Enums.RespostasEnum;
 import com.ambientese.grupo5.Model.FormularioModel;
 import com.ambientese.grupo5.Model.PerguntasModel;
 import com.ambientese.grupo5.Model.RespostaModel;
@@ -145,33 +144,23 @@ public class ProcessarFormularioService {
 
         for (FormularioRequest resposta : formularioRequestList) {
             if (resposta.getRespostaUsuario() != null) {
-                if (resposta.getRespostaUsuario() == RespostasEnum.Conforme) {
-                    perguntasConforme++;
-                    switch (resposta.getPerguntaEixo()) {
-                        case Social:
-                            conformeSocial++;
-                            break;
-                        case Ambiental:
-                            conformeAmbiental++;
-                            break;
-                        case Governamental:
-                            conformeGovernamental++;
-                            break;
+                switch (resposta.getRespostaUsuario()) {
+                    case Conforme -> {
+                        perguntasConforme++;
+                        switch (resposta.getPerguntaEixo()) {
+                            case Social -> conformeSocial++;
+                            case Ambiental -> conformeAmbiental++;
+                            case Governamental -> conformeGovernamental++;
+                        }
                     }
-                } else if (resposta.getRespostaUsuario() == RespostasEnum.NaoConforme) {
-                    switch (resposta.getPerguntaEixo()) {
-                        case Social:
-                            naoConformeSocial++;
-                            break;
-                        case Ambiental:
-                            naoConformeAmbiental++;
-                            break;
-                        case Governamental:
-                            naoConformeGovernamental++;
-                            break;
+                    case NaoConforme -> {
+                        switch (resposta.getPerguntaEixo()) {
+                            case Social -> naoConformeSocial++;
+                            case Ambiental -> naoConformeAmbiental++;
+                            case Governamental -> naoConformeGovernamental++;
+                        }
                     }
-                } else if (resposta.getRespostaUsuario() == RespostasEnum.NaoSeAdequa) {
-                    totalPerguntas--;
+                    case NaoSeAdequa -> totalPerguntas--;
                 }
             }
         }

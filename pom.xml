@@ -8,7 +8,7 @@
 		<version>3.3.1</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.ambientese</groupId>
+	<groupId>com_ambientese</groupId>
 	<artifactId>grupo5</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>grupo5</name>
@@ -101,6 +101,10 @@
 			<artifactId>flying-saucer-pdf-itext5</artifactId>
 			<version>9.1.22</version>
 		</dependency>
+		<dependency>
+    <groupId>org.projectlombok</groupId>
+    <artifactId>lombok</artifactId>
+</dependency>
 
 	</dependencies>
 

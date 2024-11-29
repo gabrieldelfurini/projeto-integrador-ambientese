@@ -1,4 +1,5 @@
 package com.ambientese.grupo5.Model;
+
 import java.util.Objects;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -7,9 +8,15 @@ import javax.validation.constraints.Pattern;
 
 import com.ambientese.grupo5.Model.Enums.PorteEnum;
 import jakarta.persistence.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
 @Entity
-@Table (name = "Empresa")
+@Table(name = "Empresa")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class EmpresaModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -83,109 +90,5 @@ public class EmpresaModel {
             return false;
         EmpresaModel other = (EmpresaModel) obj;
         return Objects.equals(id, other.id);
-    }
-
-    public String getNomeFantasia() {
-        return nomeFantasia;
-    }
-
-    public void setNomeFantasia(String nomeFantasia) {
-        this.nomeFantasia = nomeFantasia;
-    }
-
-    public String getNomeSolicitante() {
-        return nomeSolicitante;
-    }
-
-    public void setNomeSolicitante(String nomeSolicitante) {
-        this.nomeSolicitante = nomeSolicitante;
-    }
-
-    public String getTelefoneSolicitante() {
-        return telefoneSolicitante;
-    }
-
-    public void setTelefoneSolicitante(String telefoneSolicitante) {
-        this.telefoneSolicitante = telefoneSolicitante;
-    }
-
-    public String getRazaoSocial() {
-        return razaoSocial;
-    }
-
-    public void setRazaoSocial(String razaoSocial) {
-        this.razaoSocial = razaoSocial;
-    }
-
-    public String getCnpj() {
-        return cnpj;
-    }
-
-    public void setCnpj(String cnpj) {
-        this.cnpj = cnpj;
-    }
-
-    public String getInscricaoSocial() {
-        return inscricaoSocial;
-    }
-
-    public void setInscricaoSocial(String inscricaoSocial) {
-        this.inscricaoSocial = inscricaoSocial;
-    }
-
-    public EnderecoModel getEndereco() {
-        return endereco;
-    }
-
-    public void setEndereco(EnderecoModel enderecoModel) {
-        this.endereco = enderecoModel;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getTelefoneEmpresas() {
-        return telefoneEmpresas;
-    }
-
-    public void setTelefoneEmpresas(String telefoneEmpresas) {
-        this.telefoneEmpresas = telefoneEmpresas;
-    }
-
-    public String getRamo() {
-        return ramo;
-    }
-
-    public void setRamo(String ramo) {
-        this.ramo = ramo;
-    }
-
-    public PorteEnum getPorteEmpresas() {
-        return porteEmpresas;
-    }
-
-    public void setPorteEmpresas(PorteEnum porteEmpresas) {
-        this.porteEmpresas = porteEmpresas;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Integer getRanking() {
-        return ranking;
-    }
-
-    public void setRanking(Integer ranking) {
-        this.ranking = ranking;
     }
 }

@@ -7,8 +7,15 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import jakarta.persistence.*;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+
 @Entity
 @Table(name = "Funcionario")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class FuncionarioModel {
     @Id
     private Long id;
@@ -35,60 +42,4 @@ public class FuncionarioModel {
     @ManyToOne
     @JoinColumn(name = "cargo_id")
     private CargoModel cargo;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public UsuarioModel getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(UsuarioModel usuario) {
-        this.usuario = usuario;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getCpf() {
-        return cpf;
-    }
-
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public LocalDate getDataNascimento() {
-        return dataNascimento;
-    }
-
-    public void setDataNascimento(LocalDate dataNascimento) {
-        this.dataNascimento = dataNascimento;
-    }
-
-    public CargoModel getCargo() {
-        return cargo;
-    }
-
-    public void setCargo(CargoModel cargo) {
-        this.cargo = cargo;
-    }
 }

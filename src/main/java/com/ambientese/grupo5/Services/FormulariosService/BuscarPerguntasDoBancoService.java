@@ -60,6 +60,7 @@ public class BuscarPerguntasDoBancoService {
                 List<FormularioRequest> formularioRequests = latestForm.get().getRespostas().stream()
                     .map(resposta -> new FormularioRequest(
                         resposta.getPergunta().getId(),
+                        resposta.getPergunta().getNumeroPergunta(), // Adicione este campo
                         resposta.getPergunta().getDescricao(),
                         resposta.getResposta(),
                         resposta.getPergunta().getEixo(),
